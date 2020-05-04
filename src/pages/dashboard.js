@@ -12,9 +12,11 @@ import { ReactComponent as Add } from '../images/add.svg';
 import { ReactComponent as MyCourses } from '../images/mycourses.svg';
 import { ReactComponent as HamMenu } from '../images/menu.svg';
 import { ReactComponent as Profile } from '../images/profile.svg';
+import { ReactComponent as AddSec } from '../images/addSec.svg';
 
 import ProfilePage from './profilePage.js';
 import AddCoursePage from './addCoursePage.js';
+import AddSection from './AddSection.js';
 const InstructionPage = loadable(() => import('./instructionsPage.js'));
 
 const NavLink = styled(Link)`
@@ -149,6 +151,19 @@ const Dashboard = () => {
               add Courses
             </NavLink>
             <NavLink
+              to="/signed/dash/addCourseSection/"
+              themecolors={{
+                fontColor: themeColors.fontColor,
+                secondaryBgColor: themeColors.secondaryBgColor,
+              }}
+              getProps={isActive}
+            >
+              <AddSec
+                style={{ width: '32px', height: '32px', fill: '#707070' }}
+              />
+              add Courses Section
+            </NavLink>
+            <NavLink
               to="/signed/dash/profile"
               themecolors={{
                 fontColor: themeColors.fontColor,
@@ -199,6 +214,7 @@ const Dashboard = () => {
           <div>
             <Router>
               <AddCoursePage path="/addCourse/*" />
+              <AddSection path="/addCourseSection" />
               <InstructionPage path="/instructions" />
               <ProfilePage path="/profile" />
             </Router>

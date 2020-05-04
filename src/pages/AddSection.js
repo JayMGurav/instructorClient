@@ -2,7 +2,9 @@
 import { css, jsx } from '@emotion/core';
 import { navigate } from '@reach/router';
 import { Fragment, useContext, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+
+import { GET_COURSE_BY_NAME } from '../gql/query.js';
 import { ADD_COURSE_SECTION_CONTENT } from '../gql/mutation.js';
 
 import Loading from '../components/Loading.js';
@@ -12,13 +14,101 @@ import { ThemeContext } from '../Context/theme/themeContext.js';
 const dataContentToSend = [];
 
 function AddCourseSectionPage(props) {
+  const { themeColors } = useContext(ThemeContext);
+  const [courseName, setCourseName] = useState('');
+  const [courseData, setCourseData] = useState('');
+
+  const { loading: loadingCourse, error: errorCourse, data: course } = useQuery(
+    GET_COURSE_BY_NAME,
+    {
+      skip: !courseData,
+      variables: {
+        courseName: courseData.toString(),
+      },
+    }
+  );
+  if (loadingCourse) return <p>Loading...</p>;
+  if (course && course.courseByName && course.courseByName.coursename) {
+    return (
+      <AddCourseSection
+        courseId={course.courseByName._id}
+        courseName={courseData}
+      />
+    );
+  }
+  return (
+    <Fragment>
+      <h1>
+        Add Course Name Here<span>.</span>
+      </h1>
+      {errorCourse ? (
+        <p style={{ color: 'red' }}>{errorCourse.message.split(':')[1]}</p>
+      ) : null}
+      <div
+        css={css`
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          padding: 1rem;
+          p {
+            display: inline-flex;
+            font-size: 20px;
+            background: #f28705;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+          }
+          p.error {
+            font-size: 20px;
+            color: red;
+            background: none;
+          }
+          label {
+            ${'' /* width: 30%; */}
+            display:flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0.5rem 0;
+            color: ${themeColors.secondaryFontColor};
+          }
+          input {
+            padding: 0.4rem 1rem;
+            border: none;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            background: ${themeColors.primaryBgColor};
+            color: ${themeColors.fontColor};
+            font-size: 1rem;
+          }
+        `}
+      >
+        <label htmlFor="courseName">
+          Enter your course name you want to update
+          <input
+            type="text"
+            id="courseName"
+            name="courseName"
+            value={courseName}
+            placeholder="Intro to JS"
+            onChange={(e) => setCourseName(e.target.value)}
+          />
+        </label>
+        <p onClick={() => setCourseData(courseName)}>Find course</p>
+      </div>
+    </Fragment>
+  );
+}
+
+function AddCourseSection(props) {
   const [addSectionContent, { loading, error }] = useMutation(
     ADD_COURSE_SECTION_CONTENT,
     {
       errorPolicy: 'all',
       onCompleted: (data) => {
         if (data && data.addCourseSectionContent) {
-          navigate(`/signed/dash/addCourse/addfinalquiz/${props.courseId}`);
+          navigate('/signed/dash/instructions');
         }
       },
     }
@@ -134,6 +224,7 @@ function AddCourseSectionPage(props) {
 
   return (
     <Fragment>
+      <p>Found Course by name : {props.courseName}</p>
       <h1>
         Add Course Section Here<span>.</span>
       </h1>
@@ -269,6 +360,7 @@ function AddCourseSectionPage(props) {
             </p>
             <span>{videoUrl ? 'Uploaded video' : null}</span>
           </label>
+          <p>--- OR ---</p>
           <label htmlFor="videoUrl">
             video url
             <input

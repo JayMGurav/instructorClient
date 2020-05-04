@@ -10,4 +10,13 @@ const GET_MY_DETAILS = gql`
   }
 `;
 
-export { GET_MY_DETAILS };
+const GET_COURSE_BY_NAME = gql`
+  query($courseName: String!) {
+    courseByName(courseName: $courseName) {
+      _id
+      coursename
+    }
+  }
+`;
+
+export { GET_MY_DETAILS, GET_COURSE_BY_NAME };
