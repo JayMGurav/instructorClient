@@ -14,6 +14,7 @@ import { ReactComponent as HamMenu } from '../images/menu.svg';
 import { ReactComponent as Profile } from '../images/profile.svg';
 import { ReactComponent as AddSec } from '../images/addSec.svg';
 
+import LogoDiv from '../components/Logo.js';
 import ProfilePage from './profilePage.js';
 import AddCoursePage from './addCoursePage.js';
 import AddSection from './AddSection.js';
@@ -112,16 +113,7 @@ const Dashboard = () => {
         `}
       >
         <header>
-          <div
-            id="logo"
-            css={css`
-              margin: 3vh 0.5rem;
-              width: 40px;
-              height: 40px;
-              background: #707070;
-              border-radius: 8px;
-            `}
-          ></div>
+          <LogoDiv />
           <span>A</span>IOC
         </header>
         <nav>
