@@ -108,6 +108,7 @@ function AddCourseSection(props) {
       errorPolicy: 'all',
       onCompleted: (data) => {
         if (data && data.addCourseSectionContent) {
+          alert('added section successfully');
           navigate('/signed/dash/instructions');
         }
       },
